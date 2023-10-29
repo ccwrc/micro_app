@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Hell Ponies of Miami - Motorcycle Club. Please register:</h3>
+    {# //todo wzsystko + js + jquery? vue jak starczy czasu  #}
+
+
+    <form class="form-check">
+        <label for="name"> name
+            <input type="text" id="name" required>
+        </label> <br>
+        <label for="surname"> surname
+            <input type="text" id="surname" required>
+        </label> <br>
+        <label for="email"> email
+            <input type="email" id="email" required>
+        </label> <br>
+        <label for="description"> description
+            <input type="text" id="description">
+        </label> <br>
+
+        <label for="position"> position
+            <select id="position" required>
+                <option value="">Make a selection</option>
+                <option value="{{ constant('App\\Entity\\User::POSITION_TESTER') }}">{{ constant('App\\Entity\\User::POSITION_TESTER') }}</option>
+                <option value="{{ constant('App\\Entity\\User::POSITION_DEVELOPER') }}">{{ constant('App\\Entity\\User::POSITION_DEVELOPER') }}</option>
+                <option value="{{ constant('App\\Entity\\User::POSITION_PROJECT_MANAGER') }}">{{ constant('App\\Entity\\User::POSITION_PROJECT_MANAGER') }}</option>
+            </select>
+        </label>
+        <div id="positionDetails"></div>
+        <br><br>
+
+        <button type="submit" id="register">register!</button>
+    </form>
+
+    <br>
+    <div id="ajax-results"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            const positionTester = "{{ constant('App\\Entity\\User::POSITION_TESTER') }}";
+            const positionDeveloper = "{{ constant('App\\Entity\\User::POSITION_DEVELOPER') }}";
+            const positionProjectManager = "{{ constant('App\\Entity\\User::POSITION_PROJECT_MANAGER') }}";
+
+            $('#position').change(function (event) {
+                //todo dorobić dodatkowe pola
+                console.log(event.target.value);
+
+                if (positionTester === event.target.value) {
+                    $('#toRemove1').remove();
+                    $('#toRemove2').remove();
+                    $('#toRemove3').remove();
+                    $('#positionDetails').append("<span id='toRemove1'>testing systems: <input id='positionDetails1' type='text' name='testing systems' required><br></span>")
+                        .append("<span id='toRemove2'>reporting systems: <input id='positionDetails2' type='text' name='reporting systems' required><br></span>")
+                        .append("<span id='toRemove3'>knowledge of selenium: <input id='positionDetails3' type='checkbox' name='knowledge of selenium' required></span>");
+                }
+                if (positionDeveloper === event.target.value) {
+                    $('#toRemove1').remove();
+                    $('#toRemove2').remove();
+                    $('#toRemove3').remove();
+                    $('#positionDetails').append("<span id='toRemove1'>IDE environment: <input id='positionDetails1' type='text' name='IDE environment' required><br></span>")
+                        .append("<span id='toRemove2'>programming languages: <input id='positionDetails2' type='text' name='programming languages' required><br></span>")
+                        .append("<span id='toRemove3'>knowledge of MySQL: <input id='positionDetails3' type='checkbox' name='knowledge of MySQL' required></span>");
+                }
+                if (positionProjectManager === event.target.value) {
+                    $('#toRemove1').remove();
+                    $('#toRemove2').remove();
+                    $('#toRemove3').remove();
+                    $('#positionDetails').append("<span id='toRemove1'>project management methodologies: <input id='positionDetails1' type='text' name='project management methodologies' required><br></span>")
+                        .append("<span id='toRemove2'>reporting systems: <input id='positionDetails2' type='text' name='reporting systems' required><br></span>")
+                        .append("<span id='toRemove3'>knows scrum: <input id='positionDetails3' type='checkbox' name='knows scrum' required></span>");
+                }
+            });
+
+            const endpoint = "{{ absolute_url(path('app_user_register')) }}";
+
+            $('#register').on('click', function (event) {
+                event.preventDefault();
+
+                const formData = {
+                    name: $('#name').val(),
+                    surname: $('#surname').val(),
+                    email: $('#email').val(),
+                    description: $('#description').val(),
+                    position: $('#position').val(),
+                    positionDetails: {
+                        "positionDetails1": $('#positionDetails1').attr('name') + ": " + $('#positionDetails1').val(),
+                        "positionDetails2": $('#positionDetails2').attr('name') + ": " + $('#positionDetails2').val(),
+                        "positionDetails3": $('#positionDetails3').attr('name') + ": " + $('#positionDetails3').val(),
+                    },
+                };
+
+                $.ajax({
+                    url: endpoint,
+                    data: formData,
+                    type: "POST",
+                    dataType: "json"
+                })
+                    .done(function (json) {
+                        console.log(json); //todo kas log
+                        $('#ajax-results').text('Success ' + json['result']);
+                    })
+                    .fail(function () {
+                        $('#ajax-results').text('Success');
+                    });
+            });
+        });
+    </script>
+{% endblock %}
