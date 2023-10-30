@@ -17,6 +17,8 @@ use Symfony\Component\Uid\Uuid;
 class RegisterController extends AbstractController
 {
     /**
+     * //todo docs
+     *
      * @param Request $request
      * @param RegisterUserService $registerUserService
      * @param RegisterConfirmationService $registerConfirmationService
@@ -43,9 +45,6 @@ class RegisterController extends AbstractController
                 $registerConfirmationService->sendMail($user, $plainPassword);
             } catch (\Throwable $throwable) {
                 $response['result'] = 'error: some message';
-
-                //todo kasuj poniższy dump
-                return new JsonResponse(['ess' => $throwable->getMessage()], Response::HTTP_CREATED);
 
                 return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
             }

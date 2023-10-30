@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+
+  database:
+    container_name: mysql57
+    hostname: mysql57
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: project
+      MYSQL_USER: project
+      MYSQL_PASSWORD: project
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - symfony-network
+    restart: always
+
+  php:
+    container_name: symfony
+    build:
+      context: .
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/var/www
+    networks:
+      - symfony-network
+    depends_on:
+      - database
+
+volumes:
+  mysql-volume:
+
+networks:
+  symfony-network:
+    driver: bridge

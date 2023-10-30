@@ -20,7 +20,7 @@ class RegisterConfirmationService
     private ParameterBagInterface $parameterBag;
 
     public function __construct(
-        MailerInterface $mailer,
+        MailerInterface       $mailer,
         ParameterBagInterface $parameterBag
     )
     {
@@ -38,20 +38,17 @@ class RegisterConfirmationService
      * @throws \DomainException If sending fails.
      */
     public function sendMail(
-        User $user,
+        User                          $user,
         #[\SensitiveParameter] string $plainPassword
     ): true
     {
-        //todo sprawdzić poprzez code insepection, czy wszystko jest zgodne z php 82
-
         try {
             $templatedEmail = new TemplatedEmail();
-            $templatedEmail->from($this->parameterBag->get('register_email')) //todo zrobić dump
+            $templatedEmail->from($this->parameterBag->get('register_email'))
                 ->to((string)$user->getEmail())
                 ->subject(self::EMAIL_SUBJECT)
                 ->htmlTemplate('service/register_confirmation/register_confirmation_email.html.twig')
                 ->context([
-                    //todo dodać ścieżkę do zalogowania się? w sumie mozna bezpośrednio z widoku
                     'user' => $user,
                     'plainPassword' => $plainPassword
                 ]);

@@ -2,8 +2,6 @@
 
 {% block body %}
     <h3>Hell Ponies of Miami - Motorcycle Club. Please register:</h3>
-    {# //todo wzsystko + js + jquery? vue jak starczy czasu  #}
-
 
     <form class="form-check">
         <label for="name"> name
@@ -40,14 +38,13 @@
 {% block javascripts %}
     <script>
         $(document).ready(function () {
+            const endpoint = "{{ absolute_url(path('app_user_register')) }}";
+
             const positionTester = "{{ constant('App\\Entity\\User::POSITION_TESTER') }}";
             const positionDeveloper = "{{ constant('App\\Entity\\User::POSITION_DEVELOPER') }}";
             const positionProjectManager = "{{ constant('App\\Entity\\User::POSITION_PROJECT_MANAGER') }}";
 
             $('#position').change(function (event) {
-                //todo dorobić dodatkowe pola
-                console.log(event.target.value);
-
                 if (positionTester === event.target.value) {
                     $('#toRemove1').remove();
                     $('#toRemove2').remove();
@@ -74,8 +71,6 @@
                 }
             });
 
-            const endpoint = "{{ absolute_url(path('app_user_register')) }}";
-
             $('#register').on('click', function (event) {
                 event.preventDefault();
 
@@ -88,7 +83,7 @@
                     positionDetails: {
                         "positionDetails1": $('#positionDetails1').attr('name') + ": " + $('#positionDetails1').val(),
                         "positionDetails2": $('#positionDetails2').attr('name') + ": " + $('#positionDetails2').val(),
-                        "positionDetails3": $('#positionDetails3').attr('name') + ": " + $('#positionDetails3').val(),
+                        "positionDetails3": $('#positionDetails3').attr('name') + ": " + $('#positionDetails3').prop('checked'),
                     },
                 };
 
@@ -99,11 +94,10 @@
                     dataType: "json"
                 })
                     .done(function (json) {
-                        console.log(json); //todo kas log
                         $('#ajax-results').text('Success ' + json['result']);
                     })
                     .fail(function () {
-                        $('#ajax-results').text('Success');
+                        $('#ajax-results').text('Failure');
                     });
             });
         });

@@ -3,8 +3,22 @@
 {% block body %}
 
     <h6>Welcome to Hell Ponies of Miami - Motorcycle Club.</h6>
-
-{#    //todo wszystko #}
-    welcome...
+    <br>
+    Your Data: <br>
+    <br>
+    <b>email</b>: {{ user.email }}<br>
+    <b>password</b>: {{ plainPassword }}<br>
+    <b>name</b>: {{ user.name }}<br>
+    <b>surname</b>: {{ user.surname }}<br>
+    <b>description</b>: {{ user.description | default('') }}<br>
+    <b>position</b>: {{ user.position }}<br>
+    <b>position details</b>: <br>
+    {% for key, value in user.positionDetails %}
+        - {{ value }} <br>
+    {% else %}
+        - <br>
+    {% endfor %}
+    <br>
+    <a href="{{ absolute_url(path('app_login')) }}">click to log on</a>
 
 {% endblock %}
